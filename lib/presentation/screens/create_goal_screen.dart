@@ -145,12 +145,21 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         Text(
           'What type of goal?',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
+            letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 8),
+        Text(
+          'Choose the one that fits your needs best.',
+          style: TextStyle(
+            fontSize: 14,
+            color: isDark ? Colors.grey[400] : Colors.grey[600],
+          ),
+        ),
+        const SizedBox(height: 32),
         _buildGoalTypeCard(
           type: GoalType.numeric,
           icon: LucideIcons.trendingUp,
@@ -158,7 +167,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           description: 'Track progress towards a number',
           isDark: isDark,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         _buildGoalTypeCard(
           type: GoalType.habit,
           icon: LucideIcons.flame,
@@ -166,7 +175,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           description: 'Build streaks with daily actions',
           isDark: isDark,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         _buildGoalTypeCard(
           type: GoalType.milestone,
           icon: LucideIcons.flag,
@@ -174,7 +183,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           description: 'Complete phases step by step',
           isDark: isDark,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         _buildGoalTypeCard(
           type: GoalType.levels,
           icon: LucideIcons.layers,
@@ -182,7 +191,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           description: 'Progress through skill levels',
           isDark: isDark,
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: 48),
         _buildContinueButton(isDark, onPressed: () {
           if (_selectedGoalType != null) {
             setState(() => _currentStep = 2);
@@ -192,7 +201,10 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     );
   }
 
+  // Helper methods defined below
   Widget _buildStep2(bool isDark) {
+    const accentColor = Color(0xFF1ABC9C);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -200,51 +212,53 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         Text(
           'Goal Title',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         TextField(
           controller: _titleController,
           onChanged: (value) => _goalTitle = value,
           decoration: InputDecoration(
             hintText: 'e.g., Read 12 books this year',
             hintStyle: TextStyle(
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.3),
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF171A26) : Colors.white,
+            fillColor: isDark ? const Color(0xFF1E2130) : const Color(0xFFF0F2F5),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: accentColor, width: 1.5),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           ),
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
+            fontSize: 16,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
         
         // Description
         Text(
           'Description (optional)',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         TextField(
           controller: _descriptionController,
           onChanged: (value) => _goalDescription = value,
@@ -252,121 +266,128 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           decoration: InputDecoration(
             hintText: 'Why is this goal important to you?',
             hintStyle: TextStyle(
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.3),
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF171A26) : Colors.white,
+            fillColor: isDark ? const Color(0xFF1E2130) : const Color(0xFFF0F2F5),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: accentColor, width: 1.5),
+            ),
+            contentPadding: const EdgeInsets.all(20),
           ),
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
+            fontSize: 16,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
         
         // Category
         Text(
           'Category',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
         const SizedBox(height: 12),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
+          spacing: 10,
+          runSpacing: 10,
           children: _categories.map((category) {
             final isSelected = _selectedCategory == category;
             return GestureDetector(
               onTap: () => setState(() => _selectedCategory = category),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF1ABC9C).withOpacity(0.1)
-                      : (isDark ? const Color(0xFF171A26) : Colors.white),
-                  borderRadius: BorderRadius.circular(8),
+                      ? accentColor.withOpacity(0.15)
+                      : (isDark ? const Color(0xFF1E2130) : Colors.white),
+                  borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: isSelected
-                        ? const Color(0xFF1ABC9C)
-                        : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
-                    width: isSelected ? 2 : 1,
+                        ? accentColor
+                        : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!),
+                    width: isSelected ? 1.5 : 1,
                   ),
                 ),
                 child: Text(
                   category.name[0].toUpperCase() + category.name.substring(1),
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                     color: isSelected
-                        ? const Color(0xFF1ABC9C)
-                        : (isDark ? Colors.grey[300] : const Color(0xFF222639)),
+                        ? accentColor
+                        : (isDark ? Colors.grey[300] : const Color(0xFF2D3142)),
                   ),
                 ),
               ),
             );
           }).toList(),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
         
         // Color Theme
         Text(
           'Color Theme',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Row(
           children: _availableColors.map((color) {
             final isSelected = _selectedColor == color;
             return GestureDetector(
               onTap: () => setState(() => _selectedColor = color),
-              child: Container(
-                width: 60,
-                height: 60,
-                margin: const EdgeInsets.only(right: 12),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: 50,
+                height: 50,
+                margin: const EdgeInsets.only(right: 16),
                 decoration: BoxDecoration(
                   color: color,
-                  borderRadius: BorderRadius.circular(12),
+                  shape: BoxShape.circle,
                   border: isSelected
                       ? Border.all(
-                          color: Colors.white,
+                          color: isDark ? const Color(0xFF11131D) : Colors.white,
                           width: 3,
                         )
                       : null,
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: color.withOpacity(0.4),
+                            color: color.withOpacity(0.5),
                             blurRadius: 12,
-                            offset: const Offset(0, 4),
+                            spreadRadius: 2,
                           ),
                         ]
                       : null,
                 ),
+                child: isSelected 
+                  ? Center(child: Icon(Icons.check, color: Colors.white, size: 24))
+                  : null,
               ),
             );
           }).toList(),
         ),
         const SizedBox(height: 40),
         
-        // Back and Continue buttons
+        // Buttons
         Row(
           children: [
             Expanded(
@@ -376,24 +397,18 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   onPressed: () => setState(() => _currentStep = 1),
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
-                      color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                      color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[300]!,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(16),
                     ),
+                    foregroundColor: isDark ? Colors.white : const Color(0xFF2D3142),
                   ),
-                  child: Text(
-                    'Back',
-                    style: TextStyle(
-                      color: isDark ? Colors.grey[300] : const Color(0xFF222639),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: const Text('Back', style: TextStyle(fontWeight: FontWeight.w600)),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: _buildContinueButton(isDark, onPressed: () {
                 if (_goalTitle.isNotEmpty && _selectedCategory != null) {
@@ -408,31 +423,37 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildContinueButton(bool isDark, {required VoidCallback onPressed}) {
-    return SizedBox(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       width: double.infinity,
       height: 56,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(12),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onPressed,
-            borderRadius: BorderRadius.circular(12),
-            child: const Center(
-              child: Text(
-                'Continue',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1ABC9C).withOpacity(0.4),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(16),
+          child: const Center(
+            child: Text(
+              'Continue',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
@@ -449,33 +470,37 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     required bool isDark,
   }) {
     final isSelected = _selectedGoalType == type;
+    final accentColor = const Color(0xFF1ABC9C);
     
     return GestureDetector(
       onTap: () => setState(() => _selectedGoalType = type),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF171A26) : Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          color: isSelected
+              ? accentColor.withOpacity(isDark ? 0.15 : 0.08)
+              : (isDark ? const Color(0xFF1E2130) : Colors.white),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF1ABC9C)
-                : (isDark ? Colors.grey[700]! : Colors.grey[200]!),
-            width: isSelected ? 2 : 1,
+                ? accentColor
+                : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!),
+            width: isSelected ? 1.5 : 1,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: const Color(0xFF1ABC9C).withOpacity(0.2),
-                    blurRadius: 12,
+                    color: accentColor.withOpacity(0.2),
+                    blurRadius: 15,
                     offset: const Offset(0, 4),
                   ),
                 ]
               : [
                   BoxShadow(
-                    color: const Color(0xFF222639).withOpacity(isDark ? 0.2 : 0.05),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
+                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
                 ],
         ),
@@ -485,16 +510,26 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
+                gradient: isSelected
+                    ? LinearGradient(
+                        colors: [
+                          accentColor.withOpacity(0.2),
+                          accentColor.withOpacity(0.1),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
                 color: isSelected
-                    ? const Color(0xFF1ABC9C).withOpacity(0.1)
-                    : (isDark ? Colors.grey[800] : Colors.grey[100]),
-                borderRadius: BorderRadius.circular(12),
+                    ? null
+                    : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[50]),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
                 child: Icon(
                   icon,
-                  color: isSelected ? const Color(0xFF1ABC9C) : (isDark ? Colors.grey[400] : Colors.grey[600]),
-                  size: 28,
+                  color: isSelected ? accentColor : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                  size: 26,
                 ),
               ),
             ),
@@ -506,22 +541,44 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 17,
                       fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : const Color(0xFF222639),
+                      color: isDark ? Colors.white : const Color(0xFF2D3142),
+                      letterSpacing: 0.3,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     description,
                     style: TextStyle(
-                      fontSize: 12,
-                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      fontSize: 13,
+                      color: isDark ? Colors.grey[400] : Colors.grey[500],
+                      height: 1.3,
                     ),
                   ),
                 ],
               ),
             ),
+            if (isSelected)
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: accentColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentColor.withOpacity(0.4),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.check,
+                  size: 14,
+                  color: Colors.white,
+                ),
+              ),
           ],
         ),
       ),
@@ -542,18 +599,20 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildStep3Numeric(bool isDark) {
+    const accentColor = Color(0xFF1ABC9C);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Target Value',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         TextField(
           controller: _targetValueController,
           onChanged: (_) => setState(() {}),
@@ -569,62 +628,66 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           decoration: InputDecoration(
             hintText: 'e.g., 12',
             hintStyle: TextStyle(
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.3),
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF171A26) : Colors.white,
+            fillColor: isDark ? const Color(0xFF1E2130) : const Color(0xFFF0F2F5),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: accentColor, width: 1.5),
+            ),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           ),
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
+            fontSize: 16,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
         Text(
           'Unit',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 10),
         TextField(
           controller: _unitController,
           onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
             hintText: 'e.g., books, miles, dollars',
             hintStyle: TextStyle(
-              color: isDark ? Colors.grey[600] : Colors.grey[400],
+              color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.3),
             ),
             filled: true,
-            fillColor: isDark ? const Color(0xFF171A26) : Colors.white,
+            fillColor: isDark ? const Color(0xFF1E2130) : const Color(0xFFF0F2F5),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(
-                color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-              ),
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide.none,
             ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: const BorderSide(color: accentColor, width: 1.5),
+            ),
+             contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           ),
           style: TextStyle(
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
+            fontSize: 16,
           ),
         ),
         const SizedBox(height: 40),
@@ -634,77 +697,83 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildStep3Habit(bool isDark) {
+    const accentColor = Color(0xFF1ABC9C);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Frequency',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
               child: GestureDetector(
                 onTap: () => setState(() => _frequency = 'daily'),
-                child: Container(
-                  height: 56,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  height: 60,
                   decoration: BoxDecoration(
                     color: _frequency == 'daily'
-                        ? const Color(0xFF1ABC9C)
-                        : (isDark ? const Color(0xFF171A26) : Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                    border: _frequency == 'daily'
-                        ? null
-                        : Border.all(
-                            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-                          ),
+                        ? accentColor.withOpacity(isDark ? 0.2 : 0.1)
+                        : (isDark ? const Color(0xFF1E2130) : Colors.white),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: _frequency == 'daily'
+                          ? accentColor
+                          : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!),
+                      width: _frequency == 'daily' ? 1.5 : 1,
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       'Daily',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: _frequency == 'daily' ? FontWeight.w600 : FontWeight.w500,
                         color: _frequency == 'daily'
-                            ? Colors.white
-                            : (isDark ? Colors.grey[300] : const Color(0xFF222639)),
+                            ? accentColor
+                            : (isDark ? Colors.grey[400] : const Color(0xFF2D3142)),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: GestureDetector(
                 onTap: () => setState(() => _frequency = 'weekly'),
-                child: Container(
-                  height: 56,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  height: 60,
                   decoration: BoxDecoration(
                     color: _frequency == 'weekly'
-                        ? const Color(0xFF1ABC9C)
-                        : (isDark ? const Color(0xFF171A26) : Colors.white),
-                    borderRadius: BorderRadius.circular(12),
-                    border: _frequency == 'weekly'
-                        ? null
-                        : Border.all(
-                            color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-                          ),
+                        ? accentColor.withOpacity(isDark ? 0.2 : 0.1)
+                        : (isDark ? const Color(0xFF1E2130) : Colors.white),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: _frequency == 'weekly'
+                          ? accentColor
+                          : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!),
+                      width: _frequency == 'weekly' ? 1.5 : 1,
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       'Weekly',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: _frequency == 'weekly' ? FontWeight.w600 : FontWeight.w500,
                         color: _frequency == 'weekly'
-                            ? Colors.white
-                            : (isDark ? Colors.grey[300] : const Color(0xFF222639)),
+                            ? accentColor
+                            : (isDark ? Colors.grey[400] : const Color(0xFF2D3142)),
                       ),
                     ),
                   ),
@@ -713,13 +782,19 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Text(
-          'Build a streak by completing this every day!',
-          style: TextStyle(
-            fontSize: 12,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
-          ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Icon(LucideIcons.info, size: 16, color: isDark ? Colors.grey[500] : Colors.grey[400]),
+            const SizedBox(width: 8),
+            Text(
+              'Build a streak by completing this every day!',
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark ? Colors.grey[500] : Colors.grey[500],
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 40),
         _buildStep3Navigation(isDark),
@@ -728,60 +803,76 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildStep3Milestone(bool isDark) {
+    const accentColor = Color(0xFF1ABC9C);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Milestones',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         if (_milestones.isNotEmpty) ...[
           Column(
             children: _milestones.asMap().entries.map((entry) {
               int index = entry.key;
               String milestone = entry.value;
               return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF171A26) : Colors.white,
-                    borderRadius: BorderRadius.circular(8),
+                    color: isDark ? const Color(0xFF1E2130) : Colors.white,
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                      color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!,
                     ),
                   ),
                   child: Row(
                     children: [
-                      Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1ABC9C),
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          color: accentColor.withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${index + 1}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: accentColor,
+                            ),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 16),
                       Expanded(
                         child: Text(
                           milestone,
                           style: TextStyle(
-                            fontSize: 14,
-                            color: isDark ? Colors.grey[300] : const Color(0xFF222639),
+                            fontSize: 15,
+                            color: isDark ? Colors.white : const Color(0xFF2D3142),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       GestureDetector(
                         onTap: () => setState(() => _milestones.removeAt(index)),
-                        child: Icon(
-                          LucideIcons.trash2,
-                          size: 18,
-                          color: isDark ? Colors.grey[500] : Colors.grey[400],
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          child: Icon(
+                            LucideIcons.trash2,
+                            size: 18,
+                            color: isDark ? Colors.grey[500] : Colors.grey[400],
+                          ),
                         ),
                       ),
                     ],
@@ -790,73 +881,92 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               );
             }).toList(),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
         ],
         Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
-              child: TextField(
-                controller: _milestoneController,
-                decoration: InputDecoration(
-                  hintText: 'Add a milestone...',
-                  hintStyle: TextStyle(
-                    color: isDark ? Colors.grey[600] : Colors.grey[400],
-                  ),
-                  filled: true,
-                  fillColor: isDark ? const Color(0xFF171A26) : Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+              child: SizedBox(
+                height: 56, // Fixed height for alignment
+                child: TextField(
+                  controller: _milestoneController,
+                  decoration: InputDecoration(
+                    hintText: 'Add a milestone...',
+                    hintStyle: TextStyle(
+                      color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.3),
                     ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(
-                      color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                    filled: true,
+                    fillColor: isDark ? const Color(0xFF1E2130) : const Color(0xFFF0F2F5),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                      borderSide: const BorderSide(color: accentColor, width: 1.5),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0), // Vertical 0 allows center alignment
                   ),
-                ),
-                style: TextStyle(
-                  color: isDark ? Colors.white : const Color(0xFF222639),
+                  style: TextStyle(
+                    color: isDark ? Colors.white : const Color(0xFF2D3142),
+                  ),
+                  textAlignVertical: TextAlignVertical.center,
                 ),
               ),
             ),
-            const SizedBox(width: 8),
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFF1ABC9C),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {
-                    if (_milestoneController.text.isNotEmpty) {
-                      setState(() {
-                        _milestones.add(_milestoneController.text);
-                        _milestoneController.clear();
-                      });
-                    }
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  child: const Center(
-                    child: Icon(LucideIcons.plus, color: Colors.white, size: 24),
+            const SizedBox(width: 12),
+            GestureDetector(
+              onTap: () {
+                if (_milestoneController.text.isNotEmpty) {
+                  setState(() {
+                    _milestones.add(_milestoneController.text);
+                    _milestoneController.clear();
+                  });
+                }
+              },
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1ABC9C), Color(0xFF16A085)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accentColor.withOpacity(0.3),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Center(
+                  child: Icon(LucideIcons.plus, color: Colors.white, size: 26),
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
-        Text(
-          'Add at least one milestone to track your progress step by step.',
-          style: TextStyle(
-            fontSize: 12,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
-          ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Icon(LucideIcons.info, size: 16, color: isDark ? Colors.grey[500] : Colors.grey[400]),
+            const SizedBox(width: 8),
+            Text(
+              'Add at least one milestone to track your progress.',
+              style: TextStyle(
+                fontSize: 13,
+                color: isDark ? Colors.grey[500] : Colors.grey[500],
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 40),
         _buildStep3Navigation(isDark),
@@ -865,25 +975,27 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildStep3Levels(bool isDark) {
+    const accentColor = Color(0xFF1ABC9C);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Level Preset',
           style: TextStyle(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+            color: isDark ? Colors.white : const Color(0xFF2D3142),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childAspectRatio: 1.1,
+          childAspectRatio: 1.15,
           children: [
             ..._levelPresets.entries.map((entry) {
               String presetName = entry.key;
@@ -892,20 +1004,21 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               
               return GestureDetector(
                 onTap: () => setState(() => _selectedLevelPreset = presetName),
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? const Color(0xFF1ABC9C).withOpacity(0.1)
-                        : (isDark ? const Color(0xFF171A26) : Colors.white),
-                    borderRadius: BorderRadius.circular(12),
+                        ? accentColor.withOpacity(isDark ? 0.15 : 0.1)
+                        : (isDark ? const Color(0xFF1E2130) : Colors.white),
+                    borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isSelected
-                          ? const Color(0xFF1ABC9C)
-                          : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
-                      width: isSelected ? 2 : 1,
+                          ? accentColor
+                          : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!),
+                      width: isSelected ? 1.5 : 1,
                     ),
                   ),
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -913,19 +1026,20 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                       Text(
                         presetName,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : const Color(0xFF222639),
+                          color: isDark ? Colors.white : const Color(0xFF2D3142),
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 8),
                       Text(
                         presetData['description']!,
                         style: TextStyle(
-                          fontSize: 10,
-                          color: isDark ? Colors.grey[400] : Colors.grey[600],
+                          fontSize: 11,
+                          color: isDark ? Colors.grey[400] : Colors.grey[500],
+                          height: 1.4,
                         ),
-                        maxLines: 2,
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -935,30 +1049,44 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             }).toList(),
             GestureDetector(
               onTap: () => setState(() => _selectedLevelPreset = 'custom'),
-              child: Container(
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
                 decoration: BoxDecoration(
                   color: _selectedLevelPreset == 'custom'
-                      ? const Color(0xFF1ABC9C).withOpacity(0.1)
-                      : (isDark ? const Color(0xFF171A26) : Colors.white),
-                  borderRadius: BorderRadius.circular(12),
+                      ? accentColor.withOpacity(isDark ? 0.15 : 0.1)
+                      : (isDark ? const Color(0xFF1E2130) : Colors.white),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: _selectedLevelPreset == 'custom'
-                        ? const Color(0xFF1ABC9C)
-                        : (isDark ? Colors.grey[700]! : Colors.grey[300]!),
-                    width: _selectedLevelPreset == 'custom' ? 2 : 1,
+                        ? accentColor
+                        : (isDark ? Colors.white.withOpacity(0.05) : Colors.grey[200]!),
+                    width: _selectedLevelPreset == 'custom' ? 1.5 : 1,
                   ),
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 child: Center(
-                  child: Text(
-                    'Custom',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: _selectedLevelPreset == 'custom'
-                          ? const Color(0xFF1ABC9C)
-                          : (isDark ? Colors.grey[300] : const Color(0xFF222639)),
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        LucideIcons.edit3,
+                        size: 24,
+                        color: _selectedLevelPreset == 'custom'
+                            ? accentColor
+                            : (isDark ? Colors.grey[400] : Colors.grey[500]),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Custom',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: _selectedLevelPreset == 'custom'
+                              ? accentColor
+                              : (isDark ? Colors.grey[300] : const Color(0xFF2D3142)),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -966,33 +1094,34 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           ],
         ),
         if (_selectedLevelPreset != null && _selectedLevelPreset != 'custom') ...[
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
           Text(
-            'Levels will be:',
+            'Levels Preview:',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
               color: isDark ? Colors.grey[400] : Colors.grey[600],
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           ..._levelPresets[_selectedLevelPreset]!['example']!.split(', ').asMap().entries.map((entry) {
             int index = entry.key;
             String level = entry.value;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1ABC9C).withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  color: accentColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
                     Container(
-                      width: 28,
-                      height: 28,
+                      width: 24,
+                      height: 24,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF1ABC9C),
+                        color: accentColor,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -1000,8 +1129,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                           '${index + 1}',
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -1011,7 +1140,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                       level,
                       style: TextStyle(
                         fontSize: 14,
-                        color: isDark ? Colors.white : const Color(0xFF222639),
+                        color: isDark ? Colors.white : const Color(0xFF2D3142),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -1021,8 +1150,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             );
           }).toList(),
         ] else if (_selectedLevelPreset == 'custom') ...[
-          const SizedBox(height: 24),
-          if (_customLevels.isNotEmpty) ...[
+          const SizedBox(height: 28),
+           if (_customLevels.isNotEmpty) ...[
             Column(
               children: _customLevels.asMap().entries.map((entry) {
                 int index = entry.key;
@@ -1030,18 +1159,18 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1ABC9C).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      color: accentColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
                       children: [
                         Container(
-                          width: 28,
-                          height: 28,
+                          width: 24,
+                          height: 24,
                           decoration: const BoxDecoration(
-                            color: Color(0xFF1ABC9C),
+                            color: accentColor,
                             shape: BoxShape.circle,
                           ),
                           child: Center(
@@ -1049,8 +1178,8 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                               '${index + 1}',
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
@@ -1061,7 +1190,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                             level,
                             style: TextStyle(
                               fontSize: 14,
-                              color: isDark ? Colors.white : const Color(0xFF222639),
+                              color: isDark ? Colors.white : const Color(0xFF2D3142),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -1083,58 +1212,71 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             const SizedBox(height: 12),
           ],
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: TextField(
-                  controller: _levelController,
-                  decoration: InputDecoration(
-                    hintText: 'Add a custom level...',
-                    hintStyle: TextStyle(
-                      color: isDark ? Colors.grey[600] : Colors.grey[400],
-                    ),
-                    filled: true,
-                    fillColor: isDark ? const Color(0xFF171A26) : Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                child: SizedBox(
+                  height: 56,
+                  child: TextField(
+                    controller: _levelController,
+                    decoration: InputDecoration(
+                      hintText: 'Add a custom level...',
+                      hintStyle: TextStyle(
+                        color: isDark ? Colors.white.withOpacity(0.3) : Colors.black.withOpacity(0.3),
                       ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(
-                        color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                      filled: true,
+                      fillColor: isDark ? const Color(0xFF1E2130) : const Color(0xFFF0F2F5),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: const BorderSide(color: accentColor, width: 1.5),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                     ),
-                  ),
-                  style: TextStyle(
-                    color: isDark ? Colors.white : const Color(0xFF222639),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : const Color(0xFF2D3142),
+                    ),
+                    textAlignVertical: TextAlignVertical.center,
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Container(
-                width: 56,
-                height: 56,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1ABC9C),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () {
-                      if (_levelController.text.isNotEmpty) {
-                        setState(() {
-                          _customLevels.add(_levelController.text);
-                          _levelController.clear();
-                        });
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: const Center(
-                      child: Icon(LucideIcons.plus, color: Colors.white, size: 24),
+              const SizedBox(width: 12),
+              GestureDetector(
+                onTap: () {
+                  if (_levelController.text.isNotEmpty) {
+                    setState(() {
+                      _customLevels.add(_levelController.text);
+                      _levelController.clear();
+                    });
+                  }
+                },
+                child: Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1ABC9C), Color(0xFF16A085)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: accentColor.withOpacity(0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Icon(LucideIcons.plus, color: Colors.white, size: 26),
                   ),
                 ),
               ),
@@ -1169,24 +1311,18 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               onPressed: () => setState(() => _currentStep = 2),
               style: OutlinedButton.styleFrom(
                 side: BorderSide(
-                  color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[300]!,
                 ),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
+                foregroundColor: isDark ? Colors.white : const Color(0xFF2D3142),
               ),
-              child: Text(
-                'Back',
-                style: TextStyle(
-                  color: isDark ? Colors.grey[300] : const Color(0xFF222639),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              child: const Text('Back', style: TextStyle(fontWeight: FontWeight.w600)),
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 16),
         Expanded(
           child: _buildCreateGoalButton(isDark, canCreate: canCreate),
         ),
@@ -1336,31 +1472,38 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildCreateGoalButton(bool isDark, {required bool canCreate}) {
-    return SizedBox(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
       width: double.infinity,
       height: 56,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      decoration: BoxDecoration(
+        gradient: canCreate ? const LinearGradient(
+          colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ) : null,
+        color: canCreate ? null : (isDark ? Colors.white.withOpacity(0.1) : Colors.grey[300]),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: canCreate ? [
+          BoxShadow(
+            color: const Color(0xFF1ABC9C).withOpacity(0.4),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: canCreate ? () => _createGoal(context) : null,
-            borderRadius: BorderRadius.circular(12),
-            child: const Center(
-              child: Text(
-                'Create Goal',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+        ] : null,
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: canCreate ? () => _createGoal(context) : null,
+          borderRadius: BorderRadius.circular(16),
+          child: Center(
+            child: Text(
+              'Create Goal',
+              style: TextStyle(
+                color: canCreate ? Colors.white : (isDark ? Colors.grey[500] : Colors.grey[500]),
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
           ),
