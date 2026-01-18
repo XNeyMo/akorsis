@@ -95,7 +95,7 @@ class StatsScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 24),
                             Text(
-                              '${stats['completedGoals']} ${l10n.ofWord} ${stats['totalGoals']} ${l10n.goalsCreated.toLowerCase()}',
+                              '${stats['completedGoals']} ${l10n.ofWord} ${stats['totalGoals']} ${l10n.completed.toLowerCase()}',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
