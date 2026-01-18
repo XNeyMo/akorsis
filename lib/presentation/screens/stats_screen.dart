@@ -4,6 +4,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../bloc/goal_bloc.dart';
 import '../bloc/goal_state.dart';
 import '../../domain/entities/goal.dart';
+import '../../core/l10n/app_localizations.dart';
 
 class StatsScreen extends StatelessWidget {
   const StatsScreen({super.key});
@@ -11,6 +12,8 @@ class StatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+    
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF11131D) : const Color(0xFFF5F7FA),
       body: SafeArea(
@@ -30,7 +33,7 @@ class StatsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Statistics',
+                        l10n.statistics,
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
@@ -39,7 +42,7 @@ class StatsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Your progress overview',
+                        l10n.yourProgressOverview,
                         style: TextStyle(
                           fontSize: 17,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -52,8 +55,8 @@ class StatsScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'OVERALL PROGRESS',
-                              style: TextStyle(
+                              l10n.overallProgress,
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                                 color: Color(0xFF8a94a8),
@@ -92,7 +95,7 @@ class StatsScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 24),
                             Text(
-                              '${stats['completedGoals']} of ${stats['totalGoals']} goals completed',
+                              '${stats['completedGoals']} ${l10n.ofWord} ${stats['totalGoals']} ${l10n.goalsCreated.toLowerCase()}',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -113,7 +116,7 @@ class StatsScreen extends StatelessWidget {
                                 icon: LucideIcons.target,
                                 iconColor: const Color(0xFF26C6DA),
                                 value: '${stats['totalGoals']}',
-                                label: 'Total Goals',
+                                label: l10n.totalGoals,
                               ),
                             ),
                           ),
@@ -124,7 +127,7 @@ class StatsScreen extends StatelessWidget {
                                 icon: LucideIcons.checkCircle2,
                                 iconColor: const Color(0xFF4CAF50),
                                 value: '${stats['completedGoals']}',
-                                label: 'Completed',
+                                label: l10n.completed,
                               ),
                             ),
                           ),
@@ -141,7 +144,7 @@ class StatsScreen extends StatelessWidget {
                                 icon: LucideIcons.flame,
                                 iconColor: const Color(0xFFFF9800),
                                 value: '${stats['activeStreaks']}',
-                                label: 'Active Streaks',
+                                label: l10n.activeStreaks,
                               ),
                             ),
                           ),
@@ -152,7 +155,7 @@ class StatsScreen extends StatelessWidget {
                                 icon: LucideIcons.trendingUp,
                                 iconColor: const Color(0xFF7E57C2),
                                 value: '${stats['bestStreak']}',
-                                label: 'Best Streak',
+                                label: l10n.bestStreak,
                               ),
                             ),
                           ),
@@ -167,7 +170,7 @@ class StatsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Goals by Type',
+                              l10n.goalsByType,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -176,31 +179,35 @@ class StatsScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 16),
                             _ProgressBar(
-                              label: 'Numeric Goals',
+                              label: l10n.numericGoals,
                               value: stats['numericGoals'] as int,
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFF26C6DA),
+                              goalsLabel: l10n.goals,
                             ),
                             const SizedBox(height: 12),
                             _ProgressBar(
-                              label: 'Habit Streaks',
+                              label: l10n.habitStreaks,
                               value: stats['habitGoals'] as int,
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFFFF9800),
+                              goalsLabel: l10n.goals,
                             ),
                             const SizedBox(height: 12),
                             _ProgressBar(
-                              label: 'Milestones',
+                              label: l10n.milestones,
                               value: stats['milestoneGoals'] as int,
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFF7E57C2),
+                              goalsLabel: l10n.goals,
                             ),
                             const SizedBox(height: 12),
                             _ProgressBar(
-                              label: 'Levels',
+                              label: l10n.levels,
                               value: stats['levelGoals'] as int,
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFF1ABC9C),
+                              goalsLabel: l10n.goals,
                             ),
                           ],
                         ),
@@ -214,7 +221,7 @@ class StatsScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Goals by Category',
+                              l10n.goalsByCategory,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -227,7 +234,7 @@ class StatsScreen extends StatelessWidget {
                               child: (stats['categoryCounts'] as Map<GoalCategory, int>).isEmpty
                                   ? Center(
                                       child: Text(
-                                        'No goals yet',
+                                        l10n.noGoals,
                                         style: TextStyle(
                                           fontSize: 14,
                                           color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -241,7 +248,7 @@ class StatsScreen extends StatelessWidget {
                                           .entries
                                           .map((entry) => Chip(
                                                 label: Text(
-                                                  '${entry.key.name}: ${entry.value}',
+                                                  '${_getCategoryName(entry.key, l10n)}: ${entry.value}',
                                                   style: const TextStyle(fontSize: 12),
                                                 ),
                                               ))
@@ -257,11 +264,32 @@ class StatsScreen extends StatelessWidget {
               );
             }
 
-            return const Center(child: Text('No data available'));
+            return Center(child: Text(l10n.noDataAvailable));
           },
         ),
       ),
     );
+  }
+
+  String _getCategoryName(GoalCategory category, AppLocalizations l10n) {
+    switch (category) {
+      case GoalCategory.health:
+        return l10n.health;
+      case GoalCategory.finance:
+        return l10n.finance;
+      case GoalCategory.learning:
+        return l10n.learning;
+      case GoalCategory.career:
+        return l10n.career;
+      case GoalCategory.personal:
+        return l10n.personal;
+      case GoalCategory.fitness:
+        return l10n.fitness;
+      case GoalCategory.creative:
+        return l10n.creative;
+      case GoalCategory.social:
+        return l10n.social;
+    }
   }
 
   Map<String, dynamic> _calculateStats(List<Goal> goals) {
@@ -378,12 +406,14 @@ class _ProgressBar extends StatelessWidget {
     required this.value,
     required this.total,
     required this.color,
+    required this.goalsLabel,
   });
 
   final String label;
   final int value;
   final int total;
   final Color color;
+  final String goalsLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -404,7 +434,7 @@ class _ProgressBar extends StatelessWidget {
               ),
             ),
             Text(
-              '$value goals • $percentage%',
+              '$value $goalsLabel • $percentage%',
               style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.grey[600]),
             ),
           ],

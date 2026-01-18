@@ -19,6 +19,7 @@ import 'domain/usecases/update_progress.dart';
 import 'presentation/bloc/goal_bloc.dart';
 import 'presentation/cubit/goal_detail_cubit.dart';
 import 'presentation/cubit/theme_cubit.dart';
+import 'presentation/cubit/locale_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -54,6 +55,7 @@ Future<void> init() async {
 
   // Cubit
   sl.registerFactory(() => ThemeCubit());
+  sl.registerFactory(() => LocaleCubit());
 
   // Use cases
   sl.registerLazySingleton(() => GetAllGoals(sl()));

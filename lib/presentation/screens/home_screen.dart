@@ -8,6 +8,7 @@ import '../../domain/entities/goal.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/stats_summary.dart';
 import 'create_goal_screen.dart';
+import '../../core/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,9 +31,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return goals.where((goal) => goal.type == _selectedFilter).toList();
   }
 
+  String _getGreeting(AppLocalizations l10n) {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return l10n.goodMorning;
+    if (hour < 18) return l10n.goodAfternoon;
+    return l10n.goodEvening;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+    
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF11131D) : const Color(0xFFF5F7FA),
       body: SafeArea(
@@ -63,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _getGreeting(),
+                              _getGreeting(l10n),
                               style: const TextStyle(
                                 color: Colors.white70,
                                 fontSize: 18,
@@ -107,27 +117,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     _FilterChip(
-                      label: 'All Goals',
+                      label: l10n.allGoals,
                       isSelected: _selectedFilter == null,
                       onTap: () => setState(() => _selectedFilter = null),
                     ),
                     _FilterChip(
-                      label: 'Numeric',
+                      label: l10n.numeric,
                       isSelected: _selectedFilter == GoalType.numeric,
                       onTap: () => setState(() => _selectedFilter = GoalType.numeric),
                     ),
                     _FilterChip(
-                      label: 'Habits',
+                      label: l10n.habits,
                       isSelected: _selectedFilter == GoalType.habit,
                       onTap: () => setState(() => _selectedFilter = GoalType.habit),
                     ),
                     _FilterChip(
-                      label: 'Milestone',
+                      label: l10n.milestones,
                       isSelected: _selectedFilter == GoalType.milestone,
                       onTap: () => setState(() => _selectedFilter = GoalType.milestone),
                     ),
                     _FilterChip(
-                      label: 'Levels',
+                      label: l10n.levels,
                       isSelected: _selectedFilter == GoalType.levels,
                       onTap: () => setState(() => _selectedFilter = GoalType.levels),
                     ),
@@ -168,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'No goals yet',
+                              l10n.noGoals,
                               style: TextStyle(
                                 fontSize: 18,
                                 color: isDark ? Colors.white : Colors.grey[800],
@@ -176,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Tap + to create your first goal',
+                              l10n.createFirstGoal,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -236,13 +246,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
-  }
-
-  String _getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
   }
 }
 
