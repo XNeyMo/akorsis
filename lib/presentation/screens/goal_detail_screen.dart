@@ -337,12 +337,13 @@ class _Header extends StatelessWidget {
     final isDark = false;
 
     return Container(
-      height: 380,
+      constraints: const BoxConstraints(minHeight: 350),
       decoration: BoxDecoration(
         gradient: gradient,
       ),
-      padding: const EdgeInsets.fromLTRB(20, 32, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -423,10 +424,11 @@ class _Header extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 12),
           Center(
             child: _BigProgressCircle(percent: percent, accent: accent),
           ),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -471,50 +473,68 @@ class _BigProgressCircle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 180,
-      height: 180,
+      width: 150,
+      height: 150,
       child: Stack(
         alignment: Alignment.center,
         children: [
+          // Outer glow
           Container(
-            width: 180,
-            height: 180,
+            width: 150,
+            height: 150,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.15),
+                  blurRadius: 16,
+                  spreadRadius: 3,
+                ),
+              ],
+            ),
+          ),
+          // Background circle
+          Container(
+            width: 150,
+            height: 150,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white.withOpacity(0.12),
             ),
           ),
+          // Progress arc
           SizedBox(
-            width: 180,
-            height: 180,
+            width: 150,
+            height: 150,
             child: CircularProgressIndicator(
               value: percent / 100,
               strokeWidth: 10,
-              backgroundColor: Colors.white.withOpacity(0.25),
-              valueColor: AlwaysStoppedAnimation(accent),
+              strokeCap: StrokeCap.round,
+              backgroundColor: Colors.white.withOpacity(0.2),
+              valueColor: const AlwaysStoppedAnimation(Colors.white),
             ),
           ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${percent.toInt()}%',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
+          // Inner circle with content
+          Container(
+            width: 105,
+            height: 105,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.1),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '${percent.toInt()}%',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Complete',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.85),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -538,56 +558,149 @@ class _CurrentProgressCard extends StatelessWidget {
     final unit = goal.unit ?? '';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: accent.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Current Progress',
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            '${current.toStringAsFixed(current.truncateToDouble() == current ? 0 : 1)} / ${target.toStringAsFixed(target.truncateToDouble() == target ? 0 : 1)} $unit',
-            style: TextStyle(
-              fontSize: 22,
-              color: isDark ? Colors.white : const Color(0xFF1F2937),
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 14),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF3B82F6),
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.5)!],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accent.withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(LucideIcons.trendingUp, color: Colors.white, size: 20),
               ),
-              onPressed: onAddProgress,
-              icon: const Icon(LucideIcons.plus, size: 18, color: Colors.white),
-              label: const Text(
-                'Add Progress',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+              const SizedBox(width: 14),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Current Progress',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : const Color(0xFF111827),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${(percent).toInt()}% completed',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF252839) : const Color(0xFFF5F7FA),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: accent.withOpacity(0.2),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ShaderMask(
+                  shaderCallback: (bounds) => LinearGradient(
+                    colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.5)!],
+                  ).createShader(bounds),
+                  child: Text(
+                    '${current.toStringAsFixed(current.truncateToDouble() == current ? 0 : 1)}',
+                    style: const TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Text(
+                  ' / ${target.toStringAsFixed(target.truncateToDouble() == target ? 0 : 1)} $unit',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            width: double.infinity,
+            height: 52,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.4)!],
+              ),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: accent.withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onAddProgress,
+                borderRadius: BorderRadius.circular(14),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(LucideIcons.plus, size: 20, color: Colors.white),
+                    SizedBox(width: 10),
+                    Text(
+                      'Add Progress',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -609,30 +722,59 @@ class _DetailsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Details',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF111827),
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [accent.withOpacity(0.2), accent.withOpacity(0.05)],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: accent.withOpacity(0.3),
+                  ),
+                ),
+                child: Icon(LucideIcons.info, color: accent, size: 20),
+              ),
+              const SizedBox(width: 14),
+              Text(
+                'Details',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : const Color(0xFF111827),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           _DetailRow(
             icon: LucideIcons.target,
             label: 'Target',
@@ -640,7 +782,7 @@ class _DetailsCard extends StatelessWidget {
             accent: accent,
             isDark: isDark,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
           _DetailRow(
             icon: LucideIcons.bookOpen,
             label: 'Category',
@@ -648,7 +790,7 @@ class _DetailsCard extends StatelessWidget {
             accent: accent,
             isDark: isDark,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
           _DetailRow(
             icon: LucideIcons.calendar,
             label: 'Created',
@@ -894,30 +1036,63 @@ class _MilestonesCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: accent.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Milestones',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF111827),
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.5)!],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accent.withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(LucideIcons.flag, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 14),
+              Text(
+                'Milestones',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? Colors.white : const Color(0xFF111827),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           if (milestones.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1100,36 +1275,106 @@ class _LevelsCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: accent.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Level Progression',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: isDark ? Colors.white : const Color(0xFF111827),
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.5)!],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: accent.withOpacity(0.4),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(LucideIcons.layers, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Level Progression',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? Colors.white : const Color(0xFF111827),
+                      ),
+                    ),
+                    Text(
+                      '${currentIndex} of ${levels.length} completed',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.15),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  '${((currentIndex / levels.length) * 100).toInt()}%',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: accent,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 20),
           if (levels.isEmpty)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                'No levels added yet.',
-                style: TextStyle(color: isDark ? Colors.grey[400] : const Color(0xFF6B7280), fontSize: 12),
+              child: Center(
+                child: Column(
+                  children: [
+                    Icon(LucideIcons.layers, size: 40, color: Colors.grey[400]),
+                    const SizedBox(height: 12),
+                    Text(
+                      'No levels added yet.',
+                      style: TextStyle(color: isDark ? Colors.grey[400] : const Color(0xFF6B7280), fontSize: 12),
+                    ),
+                  ],
+                ),
               ),
             )
           else
@@ -1143,30 +1388,56 @@ class _LevelsCard extends StatelessWidget {
                   accent: accent,
                   isDark: isDark,
                   position: index + 1,
+                  totalLevels: levels.length,
                   state: isDone
                       ? _LevelState.done
                       : (isCurrent ? _LevelState.current : _LevelState.locked),
                 );
               },
             ),
-          const SizedBox(height: 14),
-          SizedBox(
+          const SizedBox(height: 16),
+          Container(
             width: double.infinity,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: hasNext ? accent : (isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
-              ),
-              onPressed: hasNext && !isSubmitting ? onAdvance : null,
-              icon: Icon(LucideIcons.arrowUpRight, size: 18, color: hasNext ? Colors.white : (isDark ? Colors.grey[500] : const Color(0xFF9CA3AF))),
-              label: Text(
-                allDone ? 'All levels completed' : 'Advance to Next Level',
-                style: TextStyle(
-                  color: hasNext ? Colors.white : (isDark ? Colors.grey[500] : const Color(0xFF9CA3AF)),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+            height: 52,
+            decoration: BoxDecoration(
+              gradient: hasNext 
+                  ? LinearGradient(
+                      colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.4)!],
+                    )
+                  : null,
+              color: hasNext ? null : (isDark ? const Color(0xFF374151) : const Color(0xFFE5E7EB)),
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: hasNext ? [
+                BoxShadow(
+                  color: accent.withOpacity(0.4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ] : null,
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: hasNext && !isSubmitting ? onAdvance : null,
+                borderRadius: BorderRadius.circular(14),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      allDone ? LucideIcons.trophy : LucideIcons.arrowUpRight, 
+                      size: 20, 
+                      color: hasNext ? Colors.white : (isDark ? Colors.grey[500] : const Color(0xFF9CA3AF)),
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      allDone ? 'All levels completed! 🎉' : 'Advance to Next Level',
+                      style: TextStyle(
+                        color: hasNext ? Colors.white : (isDark ? Colors.grey[500] : const Color(0xFF9CA3AF)),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -1186,6 +1457,7 @@ class _LevelRow extends StatelessWidget {
     required this.isDark,
     required this.position,
     required this.state,
+    this.totalLevels = 1,
   });
 
   final Level level;
@@ -1193,89 +1465,168 @@ class _LevelRow extends StatelessWidget {
   final bool isDark;
   final int position;
   final _LevelState state;
+  final int totalLevels;
 
   @override
   Widget build(BuildContext context) {
     final isDone = state == _LevelState.done;
     final isCurrent = state == _LevelState.current;
+    final isLocked = state == _LevelState.locked;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: isDone
-            ? accent.withOpacity(0.12)
-            : isCurrent
-                ? accent.withOpacity(0.1)
-                : (isDark ? const Color(0xFF374151) : const Color(0xFFF8FAFC)),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: isDone ? accent.withOpacity(0.2) : (isDark ? const Color(0xFF4B5563) : const Color(0xFFE5E7EB))),
+        gradient: isCurrent 
+            ? LinearGradient(
+                colors: [
+                  accent.withOpacity(0.15),
+                  accent.withOpacity(0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
+        color: isCurrent 
+            ? null 
+            : (isDone 
+                ? accent.withOpacity(0.08)
+                : (isDark ? const Color(0xFF252839) : const Color(0xFFF5F7FA))),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isCurrent 
+              ? accent.withOpacity(0.5)
+              : (isDone 
+                  ? accent.withOpacity(0.2) 
+                  : (isDark ? const Color(0xFF3A3D4A) : const Color(0xFFE5E7EB))),
+          width: isCurrent ? 2 : 1,
+        ),
+        boxShadow: isCurrent ? [
+          BoxShadow(
+            color: accent.withOpacity(0.2),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ] : null,
       ),
       child: Row(
         children: [
-          _LevelBadge(
-            number: position,
-            accent: accent,
-            isDark: isDark,
-            state: state,
+          // Position badge
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              gradient: isDone || isCurrent
+                  ? LinearGradient(
+                      colors: [
+                        accent,
+                        Color.lerp(accent, const Color(0xFF7C3BED), 0.4)!,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isDone || isCurrent ? null : (isDark ? const Color(0xFF3A3D4A) : const Color(0xFFE5E7EB)),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: isDone || isCurrent ? [
+                BoxShadow(
+                  color: accent.withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
+                ),
+              ] : null,
+            ),
+            child: Center(
+              child: Text(
+                '$position',
+                style: TextStyle(
+                  color: isDone || isCurrent ? Colors.white : (isDark ? Colors.grey[400] : Colors.grey[600]),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Text(
-                      level.title,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: isDone ? accent : const Color(0xFF111827),
+                    Flexible(
+                      child: Text(
+                        level.title,
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: isDone 
+                              ? accent 
+                              : (isDark ? Colors.white : const Color(0xFF111827)),
+                        ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(width: 8),
                     if (isCurrent)
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: accent.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(10),
+                          gradient: LinearGradient(
+                            colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.5)!],
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Text(
+                        child: const Text(
                           'Current',
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: accent),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
                         ),
                       )
                   ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   isDone
-                      ? 'Completed ${_formatDate(level.completedAt ?? DateTime.now())}'
+                      ? 'Completed ✓'
                       : (isCurrent ? 'In progress' : 'Locked'),
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+                  style: TextStyle(
+                    fontSize: 12, 
+                    color: isDone 
+                        ? accent 
+                        : (isDark ? Colors.grey[400] : const Color(0xFF6B7280)),
+                    fontWeight: isDone ? FontWeight.w600 : FontWeight.normal,
+                  ),
                 ),
               ],
             ),
           ),
-          if (isDone)
-            Icon(LucideIcons.checkCircle2, color: accent, size: 20)
-          else if (isCurrent)
-            Icon(LucideIcons.circleDot, color: accent, size: 20)
-          else
-            Icon(LucideIcons.lock, color: isDark ? Colors.grey[500] : const Color(0xFF9CA3AF), size: 18),
+          // Status icon
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: isDone 
+                  ? accent.withOpacity(0.15)
+                  : (isCurrent 
+                      ? accent.withOpacity(0.15)
+                      : (isDark ? const Color(0xFF3A3D4A) : const Color(0xFFF0F0F0))),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isDone 
+                  ? LucideIcons.checkCircle2 
+                  : (isCurrent 
+                      ? LucideIcons.circleDot 
+                      : LucideIcons.lock),
+              color: isDone || isCurrent 
+                  ? accent 
+                  : (isDark ? Colors.grey[500] : const Color(0xFF9CA3AF)),
+              size: 18,
+            ),
+          ),
         ],
       ),
     );
-  }
-
-  String _formatDate(DateTime date) {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
 }
 
@@ -1332,15 +1683,26 @@ class _HabitCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1F2937) : Colors.white,
-        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            color: accent.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -1350,45 +1712,78 @@ class _HabitCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(LucideIcons.flame, color: accent, size: 18),
-              const SizedBox(width: 8),
-              Text(
-                '$streak day streak',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: isDark ? Colors.white : const Color(0xFF111827),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: accent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
                 ),
+                child: Icon(LucideIcons.flame, color: accent, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$streak day streak',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? Colors.white : const Color(0xFF111827),
+                    ),
+                  ),
+                  Text(
+                    'Best: $best days',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            'Best: $best days',
-            style: TextStyle(
-              fontSize: 12,
-              color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: accent,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                elevation: 0,
+            height: 52,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [accent, Color.lerp(accent, const Color(0xFF7C3BED), 0.4)!],
+                ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: accent.withOpacity(0.4),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-              onPressed: onComplete,
-              icon: const Icon(LucideIcons.check, size: 18, color: Colors.white),
-              label: const Text(
-                'Mark Complete',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onComplete,
+                  borderRadius: BorderRadius.circular(14),
+                  child: const Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(LucideIcons.check, size: 20, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text(
+                          'Mark Complete',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
