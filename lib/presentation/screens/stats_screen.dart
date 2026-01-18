@@ -51,54 +51,162 @@ class StatsScreen extends StatelessWidget {
                       const SizedBox(height: 32),
 
                       // Overall progress card
-                      _StatCard(
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: isDark 
+                                ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+                                : [Colors.white, const Color(0xFFF8FAFE)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                          border: Border.all(
+                            color: isDark 
+                                ? const Color(0xFF2A2D3A) 
+                                : Colors.grey.shade200,
+                            width: 1,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF1ABC9C).withOpacity(0.1),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
                         child: Column(
                           children: [
-                            Text(
-                              l10n.overallProgress,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF8a94a8),
-                                letterSpacing: 1.2,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFF1ABC9C), Color(0xFF26C6DA)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    l10n.overallProgress,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                      letterSpacing: 1.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 28),
                             SizedBox(
-                              width: 150,
-                              height: 150,
+                              width: 160,
+                              height: 160,
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: 150,
-                                    height: 150,
-                                    child: CircularProgressIndicator(
-                                      value: stats['overallProgress'] as double,
-                                      strokeWidth: 12,
-                                      backgroundColor: isDark 
-                                          ? const Color(0xFF2A2D3A) 
-                                          : const Color(0xFFE0F7FA),
-                                      valueColor: const AlwaysStoppedAnimation(Color(0xFF26C6DA)),
+                                  // Outer glow effect
+                                  Container(
+                                    width: 160,
+                                    height: 160,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: const Color(0xFF1ABC9C).withOpacity(0.3),
+                                          blurRadius: 20,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Text(
-                                    '${((stats['overallProgress'] as double) * 100).toInt()}%',
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                      color: isDark ? Colors.white : const Color(0xFF222639),
+                                  // Background circle
+                                  Container(
+                                    width: 160,
+                                    height: 160,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: isDark 
+                                          ? const Color(0xFF252839)
+                                          : const Color(0xFFF0F4F8),
+                                    ),
+                                  ),
+                                  // Progress indicator
+                                  SizedBox(
+                                    width: 160,
+                                    height: 160,
+                                    child: CircularProgressIndicator(
+                                      value: stats['overallProgress'] as double,
+                                      strokeWidth: 8,
+                                      strokeCap: StrokeCap.round,
+                                      backgroundColor: Colors.transparent,
+                                      valueColor: const AlwaysStoppedAnimation(
+                                        Color(0xFF1ABC9C),
+                                      ),
+                                    ),
+                                  ),
+                                  // Inner circle with percentage
+                                  Container(
+                                    width: 120,
+                                    height: 120,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        colors: isDark 
+                                            ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+                                            : [Colors.white, const Color(0xFFF8FAFE)],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        ShaderMask(
+                                          shaderCallback: (bounds) => const LinearGradient(
+                                            colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
+                                          ).createShader(bounds),
+                                          child: Text(
+                                            '${((stats['overallProgress'] as double) * 100).toInt()}%',
+                                            style: const TextStyle(
+                                              fontSize: 36,
+                                              fontWeight: FontWeight.w800,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                             const SizedBox(height: 24),
-                            Text(
-                              '${stats['completedGoals']} ${l10n.ofWord} ${stats['totalGoals']} ${l10n.completed.toLowerCase()}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: isDark 
+                                    ? const Color(0xFF252839)
+                                    : const Color(0xFFF0F4F8),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '${stats['completedGoals']} ${l10n.ofWord} ${stats['totalGoals']} ${l10n.completed.toLowerCase()}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: isDark ? Colors.grey[300] : Colors.grey[700],
+                                ),
                               ),
                             ),
                           ],
@@ -367,30 +475,68 @@ class _StatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Create gradient colors based on iconColor
+    final gradientColors = [
+      iconColor,
+      Color.lerp(iconColor, const Color(0xFF7C3BED), 0.5)!,
+    ];
+    
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [
+                iconColor.withOpacity(0.2),
+                iconColor.withOpacity(0.05),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: iconColor.withOpacity(0.3),
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: iconColor.withOpacity(0.2),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: Icon(icon, color: iconColor, size: 28),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF222639),
+          child: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: gradientColors,
+            ).createShader(bounds),
+            child: Icon(icon, color: Colors.white, size: 28),
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 14),
+        ShaderMask(
+          shaderCallback: (bounds) => LinearGradient(
+            colors: isDark 
+                ? [Colors.white, Colors.grey.shade300]
+                : [const Color(0xFF222639), const Color(0xFF4A5568)],
+          ).createShader(bounds),
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
         Text(
           label,
           style: TextStyle(
             fontSize: 12,
+            fontWeight: FontWeight.w500,
             color: isDark ? Colors.grey[400] : Colors.grey[600],
           ),
           textAlign: TextAlign.center,
