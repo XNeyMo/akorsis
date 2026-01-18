@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 28),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -89,12 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 _getGreeting(l10n),
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 13,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            const SizedBox(height: 6),
                             Row(
                               children: [
                                 ShaderMask(
@@ -105,9 +105,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                     'AKORSIS',
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 30,
+                                      fontSize: 26,
                                       fontWeight: FontWeight.w800,
-                                      letterSpacing: 1.5,
+                                      letterSpacing: 1.2,
                                     ),
                                   ),
                                 ),
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                         Container(
-                          padding: const EdgeInsets.all(14),
+                          padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               colors: [
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(14),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.3),
                               width: 1,
@@ -151,12 +151,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: const Icon(
                             LucideIcons.sparkles,
                             color: Colors.white,
-                            size: 26,
+                            size: 24,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     const StatsSummary(),
                   ],
                 ),
