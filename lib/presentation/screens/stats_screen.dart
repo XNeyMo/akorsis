@@ -65,29 +65,29 @@ class StatsScreen extends StatelessWidget {
                             ),
                             const SizedBox(height: 24),
                             SizedBox(
-                              width: double.infinity,
+                              width: 150,
                               height: 150,
                               child: Stack(
+                                alignment: Alignment.center,
                                 children: [
-                                  CircularProgressIndicator(
-                                    value: stats['overallProgress'] as double,
-                                    strokeWidth: 12,
-                                    backgroundColor: const Color(0xFFE0F7FA),
-                                    valueColor: const AlwaysStoppedAnimation(Color(0xFF26C6DA)),
+                                  SizedBox(
+                                    width: 150,
+                                    height: 150,
+                                    child: CircularProgressIndicator(
+                                      value: stats['overallProgress'] as double,
+                                      strokeWidth: 12,
+                                      backgroundColor: isDark 
+                                          ? const Color(0xFF2A2D3A) 
+                                          : const Color(0xFFE0F7FA),
+                                      valueColor: const AlwaysStoppedAnimation(Color(0xFF26C6DA)),
+                                    ),
                                   ),
-                                  Center(
-                                    child: Builder(
-                                      builder: (context) {
-                                        final isDark = Theme.of(context).brightness == Brightness.dark;
-                                        return Text(
-                                          '${((stats['overallProgress'] as double) * 100).toInt()}%',
-                                          style: TextStyle(
-                                            fontSize: 32,
-                                            fontWeight: FontWeight.bold,
-                                            color: isDark ? Colors.white : const Color(0xFF222639),
-                                          ),
-                                        );
-                                      },
+                                  Text(
+                                    '${((stats['overallProgress'] as double) * 100).toInt()}%',
+                                    style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? Colors.white : const Color(0xFF222639),
                                     ),
                                   ),
                                 ],
