@@ -60,7 +60,11 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Appearance section
-                  _SectionHeader(title: l10n.appearance),
+                  _SectionHeader(
+                    title: l10n.appearance,
+                    icon: LucideIcons.palette,
+                    gradientColors: const [Color(0xFF7E57C2), Color(0xFFE91E63)],
+                  ),
                   BlocBuilder<ThemeCubit, ThemeMode>(
                     builder: (context, themeMode) {
                       final isDarkMode = themeMode == ThemeMode.dark;
@@ -85,7 +89,11 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Language section
-                  _SectionHeader(title: l10n.language),
+                  _SectionHeader(
+                    title: l10n.language,
+                    icon: LucideIcons.globe,
+                    gradientColors: const [Color(0xFF42A5F5), Color(0xFF26C6DA)],
+                  ),
                   BlocBuilder<LocaleCubit, Locale>(
                     builder: (context, locale) {
                       final localeCubit = context.read<LocaleCubit>();
@@ -165,7 +173,11 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Data section
-                  _SectionHeader(title: l10n.data),
+                  _SectionHeader(
+                    title: l10n.data,
+                    icon: LucideIcons.database,
+                    gradientColors: const [Color(0xFF26C6DA), Color(0xFF1ABC9C)],
+                  ),
                   _SettingsCard(
                     child: Column(
                       children: [
@@ -199,7 +211,11 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 32),
 
                     // About section
-                    _SectionHeader(title: l10n.about),
+                    _SectionHeader(
+                      title: l10n.about,
+                      icon: LucideIcons.info,
+                      gradientColors: const [Color(0xFFFF9800), Color(0xFFFF5722)],
+                    ),
                     _SettingsCard(
                       child: Column(
                     children: [
@@ -272,7 +288,11 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // Your journey stats
-                _SectionHeader(title: l10n.journey),
+                _SectionHeader(
+                  title: l10n.journey,
+                  icon: LucideIcons.rocket,
+                  gradientColors: const [Color(0xFF1ABC9C), Color(0xFF7E57C2)],
+                ),
                 BlocBuilder<GoalBloc, GoalState>(
                   builder: (context, state) {
                     if (state is GoalsLoaded) {
@@ -284,24 +304,33 @@ class SettingsScreen extends StatelessWidget {
                       );
 
                       return _SettingsCard(
-                        child: Column(
+                        child: Row(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                _JourneyStat(
-                                  value: '$totalGoals',
-                                  label: l10n.goalsCreated,
-                                ),
-                                _JourneyStat(
-                                  value: '$completedGoals',
-                                  label: l10n.completed,
-                                ),
-                                _JourneyStat(
-                                  value: '$bestStreak',
-                                  label: l10n.bestStreaks,
-                                ),
-                              ],
+                            Expanded(
+                              child: _JourneyStat(
+                                value: '$totalGoals',
+                                label: l10n.goalsCreated,
+                                icon: LucideIcons.target,
+                                color: const Color(0xFF26C6DA),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _JourneyStat(
+                                value: '$completedGoals',
+                                label: l10n.completed,
+                                icon: LucideIcons.checkCircle,
+                                color: const Color(0xFF4CAF50),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _JourneyStat(
+                                value: '$bestStreak',
+                                label: l10n.bestStreaks,
+                                icon: LucideIcons.flame,
+                                color: const Color(0xFFFF9800),
+                              ),
                             ),
                           ],
                         ),
@@ -404,23 +433,49 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
+  const _SectionHeader({required this.title, this.icon, this.gradientColors});
 
   final String title;
+  final IconData? icon;
+  final List<Color>? gradientColors;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = gradientColors ?? [const Color(0xFF1ABC9C), const Color(0xFF26C6DA)];
+    
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: isDark ? Colors.grey[500] : Colors.grey[600],
-          letterSpacing: 1.2,
-        ),
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: colors),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.first.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: Colors.white, size: 16),
+            ),
+            const SizedBox(width: 12),
+          ],
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: isDark ? Colors.grey[300] : Colors.grey[700],
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -437,13 +492,26 @@ class _SettingsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF222639) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF222639).withOpacity(isDark ? 0.2 : 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: isDark 
+                ? Colors.black.withOpacity(0.3)
+                : const Color(0xFF222639).withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -472,19 +540,50 @@ class _SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Create gradient colors based on iconColor
+    final gradientColors = [
+      iconColor,
+      Color.lerp(iconColor, const Color(0xFF7C3BED), 0.4)!,
+    ];
+    
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [
+                    iconColor.withOpacity(0.2),
+                    iconColor.withOpacity(0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: iconColor.withOpacity(0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: iconColor.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Icon(icon, color: iconColor, size: 24),
+              child: ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: gradientColors,
+                ).createShader(bounds),
+                child: Icon(icon, color: Colors.white, size: 22),
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -522,34 +621,75 @@ class _JourneyStat extends StatelessWidget {
   const _JourneyStat({
     required this.value,
     required this.label,
+    this.icon,
+    this.color,
   });
 
   final String value;
   final String label;
+  final IconData? icon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF222639),
-          ),
+    final statColor = color ?? const Color(0xFF1ABC9C);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF252839) : const Color(0xFFF5F7FA),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: statColor.withOpacity(0.2),
         ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+      ),
+      child: Column(
+        children: [
+          if (icon != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    statColor.withOpacity(0.2),
+                    statColor.withOpacity(0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: statColor, size: 20),
+            ),
+            const SizedBox(height: 10),
+          ],
+          ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [
+                statColor,
+                Color.lerp(statColor, const Color(0xFF7C3BED), 0.5)!,
+              ],
+            ).createShader(bounds),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
           ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
