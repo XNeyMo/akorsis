@@ -58,6 +58,7 @@ class AppLocalizations {
       'your_goals': 'Tus Metas',
       'no_goals': 'Aún no tienes metas',
       'create_first_goal': 'Toca + para crear tu primera meta',
+      'create_goal': 'Crear Meta',
       'add_goal': 'Agregar Meta',
       'good_morning': 'Buenos días',
       'good_afternoon': 'Buenas tardes',
@@ -155,6 +156,7 @@ class AppLocalizations {
       'your_goals': 'Your Goals',
       'no_goals': 'No goals yet',
       'create_first_goal': 'Tap + to create your first goal',
+      'create_goal': 'Create Goal',
       'add_goal': 'Add Goal',
       'good_morning': 'Good morning',
       'good_afternoon': 'Good afternoon',
@@ -255,6 +257,7 @@ class AppLocalizations {
   String get yourGoals => translate('your_goals');
   String get noGoals => translate('no_goals');
   String get createFirstGoal => translate('create_first_goal');
+  String get createGoal => translate('create_goal');
   String get addGoal => translate('add_goal');
   String get stats => translate('stats');
   String get overview => translate('overview');
