@@ -7,6 +7,8 @@ import '../bloc/goal_bloc.dart';
 import '../bloc/goal_event.dart';
 import '../bloc/goal_state.dart';
 import '../cubit/theme_cubit.dart';
+import '../cubit/locale_cubit.dart';
+import '../../core/l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -14,13 +16,15 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+    
     return BlocListener<GoalBloc, GoalState>(
       listener: (context, state) async {
         if (state is GoalExported) {
           await _saveExportFile(context, state.jsonData);
         } else if (state is GoalsLoaded && state.goals.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('All data cleared')),
+            SnackBar(content: Text(l10n.allDataCleared)),
           );
         } else if (state is GoalError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -38,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Settings',
+                    l10n.settings,
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -47,7 +51,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Customize your experience',
+                    l10n.customizeExperience,
                     style: TextStyle(
                       fontSize: 16,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -56,7 +60,11 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Appearance section
-                  _SectionHeader(title: 'APPEARANCE'),
+                  _SectionHeader(
+                    title: l10n.appearance,
+                    icon: LucideIcons.palette,
+                    gradientColors: const [Color(0xFF7E57C2), Color(0xFFE91E63)],
+                  ),
                   BlocBuilder<ThemeCubit, ThemeMode>(
                     builder: (context, themeMode) {
                       final isDarkMode = themeMode == ThemeMode.dark;
@@ -64,8 +72,8 @@ class SettingsScreen extends StatelessWidget {
                         child: _SettingsTile(
                           icon: isDarkMode ? LucideIcons.moon : LucideIcons.sun,
                           iconColor: isDarkMode ? const Color(0xFF7E57C2) : const Color(0xFFFF9800),
-                          title: 'Dark Mode',
-                          subtitle: isDarkMode ? 'Currently using dark theme' : 'Currently using light theme',
+                          title: l10n.darkMode,
+                          subtitle: isDarkMode ? l10n.darkThemeActive : l10n.lightThemeActive,
                           trailing: Switch(
                             value: isDarkMode,
                             onChanged: (value) {
@@ -80,32 +88,120 @@ class SettingsScreen extends StatelessWidget {
 
                   const SizedBox(height: 32),
 
+                  // Language section
+                  _SectionHeader(
+                    title: l10n.language,
+                    icon: LucideIcons.globe,
+                    gradientColors: const [Color(0xFF42A5F5), Color(0xFF26C6DA)],
+                  ),
+                  BlocBuilder<LocaleCubit, Locale>(
+                    builder: (context, locale) {
+                      final localeCubit = context.read<LocaleCubit>();
+                      return _SettingsCard(
+                        child: _SettingsTile(
+                          icon: LucideIcons.globe,
+                          iconColor: const Color(0xFF42A5F5),
+                          title: l10n.changeLanguage,
+                          subtitle: '${l10n.currentLanguage}: ${localeCubit.currentLanguageName}',
+                          trailing: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF1ABC9C).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(0xFF1ABC9C).withOpacity(0.3),
+                              ),
+                            ),
+                            child: DropdownButton<String>(
+                              value: locale.languageCode,
+                              underline: const SizedBox(),
+                              isDense: true,
+                              icon: Icon(
+                                LucideIcons.chevronDown,
+                                size: 16,
+                                color: isDark ? Colors.white : const Color(0xFF222639),
+                              ),
+                              dropdownColor: isDark ? const Color(0xFF222639) : Colors.white,
+                              items: [
+                                DropdownMenuItem(
+                                  value: 'es',
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text('🇪🇸', style: TextStyle(fontSize: 16)),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        l10n.spanish,
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : const Color(0xFF222639),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'en',
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text('🇺🇸', style: TextStyle(fontSize: 16)),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        l10n.english,
+                                        style: TextStyle(
+                                          color: isDark ? Colors.white : const Color(0xFF222639),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                              onChanged: (value) {
+                                if (value != null) {
+                                  localeCubit.setLocale(Locale(value));
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 32),
+
                   // Data section
-                  _SectionHeader(title: 'DATA'),
+                  _SectionHeader(
+                    title: l10n.data,
+                    icon: LucideIcons.database,
+                    gradientColors: const [Color(0xFF26C6DA), Color(0xFF1ABC9C)],
+                  ),
                   _SettingsCard(
                     child: Column(
                       children: [
                         _SettingsTile(
                           icon: LucideIcons.arrowBigDownDash,
                           iconColor: const Color(0xFF26C6DA),
-                          title: 'Export Data',
-                          subtitle: 'Download all your goals',
+                          title: l10n.exportData,
+                          subtitle: l10n.downloadGoals,
                           onTap: () => _exportData(context),
                         ),
                         const Divider(height: 1),
                         _SettingsTile(
                           icon: LucideIcons.arrowBigUpDash,
                           iconColor: const Color(0xFF7E57C2),
-                          title: 'Import Data',
-                          subtitle: 'Import goals',
+                          title: l10n.importData,
+                          subtitle: l10n.importGoals,
                           onTap: () => _importData(context),
                         ),
                         const Divider(height: 1),
                         _SettingsTile(
                           icon: LucideIcons.trash,
                           iconColor: Colors.red,
-                          title: 'Clear All Data',
-                          subtitle: 'Delete all goals and progress',
+                          title: l10n.clearAllData,
+                          subtitle: l10n.deleteGoalsProgress,
                           onTap: () => _confirmClearData(context),
                         ),
                       ],
@@ -115,7 +211,11 @@ class SettingsScreen extends StatelessWidget {
                   const SizedBox(height: 32),
 
                     // About section
-                    _SectionHeader(title: 'ABOUT'),
+                    _SectionHeader(
+                      title: l10n.about,
+                      icon: LucideIcons.info,
+                      gradientColors: const [Color(0xFFFF9800), Color(0xFFFF5722)],
+                    ),
                     _SettingsCard(
                       child: Column(
                     children: [
@@ -154,7 +254,7 @@ class SettingsScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Version 1.0.0',
+                                '${l10n.version} 1.0.0',
                                 style: TextStyle(
                                   fontSize: 14,
                                   color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -166,7 +266,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Your personal growth companion. Track goals, build habits, and achieve milestones with a beautiful, motivating experience.',
+                        l10n.appDescription,
                         style: TextStyle(
                           fontSize: 14,
                           color: isDark ? Colors.grey[300] : Colors.grey[700],
@@ -175,7 +275,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        'Made with ❤️ by ZENOEX',
+                        l10n.madeWithLove,
                         style: TextStyle(
                           fontSize: 12,
                           color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -188,7 +288,11 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 // Your journey stats
-                _SectionHeader(title: 'JOURNEY'),
+                _SectionHeader(
+                  title: l10n.journey,
+                  icon: LucideIcons.rocket,
+                  gradientColors: const [Color(0xFF1ABC9C), Color(0xFF7E57C2)],
+                ),
                 BlocBuilder<GoalBloc, GoalState>(
                   builder: (context, state) {
                     if (state is GoalsLoaded) {
@@ -200,24 +304,33 @@ class SettingsScreen extends StatelessWidget {
                       );
 
                       return _SettingsCard(
-                        child: Column(
+                        child: Row(
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                _JourneyStat(
-                                  value: '$totalGoals',
-                                  label: 'Goals Created',
-                                ),
-                                _JourneyStat(
-                                  value: '$completedGoals',
-                                  label: 'Completed',
-                                ),
-                                _JourneyStat(
-                                  value: '$bestStreak',
-                                  label: 'Best Streaks',
-                                ),
-                              ],
+                            Expanded(
+                              child: _JourneyStat(
+                                value: '$totalGoals',
+                                label: l10n.goalsCreated,
+                                icon: LucideIcons.target,
+                                color: const Color(0xFF26C6DA),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _JourneyStat(
+                                value: '$completedGoals',
+                                label: l10n.completed,
+                                icon: LucideIcons.checkCircle,
+                                color: const Color(0xFF4CAF50),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: _JourneyStat(
+                                value: '$bestStreak',
+                                label: l10n.bestStreaks,
+                                icon: LucideIcons.flame,
+                                color: const Color(0xFFFF9800),
+                              ),
                             ),
                           ],
                         ),
@@ -251,8 +364,9 @@ class SettingsScreen extends StatelessWidget {
     await file.writeAsString(jsonData);
 
     if (context.mounted) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Backup saved to $filePath')),
+        SnackBar(content: Text('${l10n.backupSaved} $filePath')),
       );
     }
   }
@@ -279,37 +393,38 @@ class SettingsScreen extends StatelessWidget {
       if (!context.mounted) return;
 
       if (importResult is GoalError) {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Import failed: ${importResult.message}')),
+          SnackBar(content: Text('${l10n.importFailed}: ${importResult.message}')),
         );
       } else {
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data imported successfully')),
+          SnackBar(content: Text(l10n.dataImported)),
         );
       }
     }
   }
 
   void _confirmClearData(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Clear All Data'),
-        content: const Text(
-          'Are you sure you want to delete all your goals and progress? This action cannot be undone.',
-        ),
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.clearDataTitle),
+        content: Text(l10n.clearDataMessage),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            onPressed: () => Navigator.pop(dialogContext),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
               context.read<GoalBloc>().add(const ClearAllDataEvent());
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
             },
             style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: Text(l10n.delete),
           ),
         ],
       ),
@@ -318,23 +433,49 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
+  const _SectionHeader({required this.title, this.icon, this.gradientColors});
 
   final String title;
+  final IconData? icon;
+  final List<Color>? gradientColors;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colors = gradientColors ?? [const Color(0xFF1ABC9C), const Color(0xFF26C6DA)];
+    
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: isDark ? Colors.grey[500] : Colors.grey[600],
-          letterSpacing: 1.2,
-        ),
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          if (icon != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: colors),
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: colors.first.withOpacity(0.4),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(icon, color: Colors.white, size: 16),
+            ),
+            const SizedBox(width: 12),
+          ],
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: isDark ? Colors.grey[300] : Colors.grey[700],
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -351,13 +492,26 @@ class _SettingsCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF222639) : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        gradient: LinearGradient(
+          colors: isDark 
+              ? [const Color(0xFF1E2235), const Color(0xFF171A26)]
+              : [Colors.white, const Color(0xFFF8FAFE)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark 
+              ? const Color(0xFF2A2D3A) 
+              : Colors.grey.shade200,
+        ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF222639).withOpacity(isDark ? 0.2 : 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            color: isDark 
+                ? Colors.black.withOpacity(0.3)
+                : const Color(0xFF222639).withOpacity(0.08),
+            blurRadius: 20,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -386,19 +540,50 @@ class _SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // Create gradient colors based on iconColor
+    final gradientColors = [
+      iconColor,
+      Color.lerp(iconColor, const Color(0xFF7C3BED), 0.4)!,
+    ];
+    
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
+                gradient: LinearGradient(
+                  colors: [
+                    iconColor.withOpacity(0.2),
+                    iconColor.withOpacity(0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: iconColor.withOpacity(0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: iconColor.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: Icon(icon, color: iconColor, size: 24),
+              child: ShaderMask(
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: gradientColors,
+                ).createShader(bounds),
+                child: Icon(icon, color: Colors.white, size: 22),
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -436,34 +621,75 @@ class _JourneyStat extends StatelessWidget {
   const _JourneyStat({
     required this.value,
     required this.label,
+    this.icon,
+    this.color,
   });
 
   final String value;
   final String label;
+  final IconData? icon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : const Color(0xFF222639),
-          ),
+    final statColor = color ?? const Color(0xFF1ABC9C);
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF252839) : const Color(0xFFF5F7FA),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: statColor.withOpacity(0.2),
         ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
+      ),
+      child: Column(
+        children: [
+          if (icon != null) ...[
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    statColor.withOpacity(0.2),
+                    statColor.withOpacity(0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: statColor, size: 20),
+            ),
+            const SizedBox(height: 10),
+          ],
+          ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [
+                statColor,
+                Color.lerp(statColor, const Color(0xFF7C3BED), 0.5)!,
+              ],
+            ).createShader(bounds),
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: Colors.white,
+              ),
+            ),
           ),
-          textAlign: TextAlign.center,
-        ),
-      ],
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: isDark ? Colors.grey[400] : Colors.grey[600],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }

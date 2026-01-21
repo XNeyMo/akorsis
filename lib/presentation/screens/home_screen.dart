@@ -8,6 +8,7 @@ import '../../domain/entities/goal.dart';
 import '../widgets/goal_card.dart';
 import '../widgets/stats_summary.dart';
 import 'create_goal_screen.dart';
+import '../../core/l10n/app_localizations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,9 +31,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return goals.where((goal) => goal.type == _selectedFilter).toList();
   }
 
+  String _getGreeting(AppLocalizations l10n) {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return l10n.goodMorning;
+    if (hour < 18) return l10n.goodAfternoon;
+    return l10n.goodEvening;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+    
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF11131D) : const Color(0xFFF5F7FA),
       body: SafeArea(
@@ -40,19 +50,26 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             // Header
             Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
                   colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(28),
+                  bottomRight: Radius.circular(28),
                 ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF1ABC9C).withOpacity(0.4),
+                    blurRadius: 20,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -62,37 +79,84 @@ class _HomeScreenState extends State<HomeScreen> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              _getGreeting(),
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 18,
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                _getGreeting(l10n),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                            const Text(
-                              'AKORSIS',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                ShaderMask(
+                                  shaderCallback: (bounds) => const LinearGradient(
+                                    colors: [Colors.white, Color(0xFFE0E0E0)],
+                                  ).createShader(bounds),
+                                  child: const Text(
+                                    'AKORSIS',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.25),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    'PRO',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.white24,
-                            borderRadius: BorderRadius.circular(12),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.white.withOpacity(0.3),
+                                Colors.white.withOpacity(0.1),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.3),
+                              width: 1,
+                            ),
                           ),
                           child: const Icon(
                             LucideIcons.sparkles,
                             color: Colors.white,
+                            size: 24,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     const StatsSummary(),
                   ],
                 ),
@@ -101,33 +165,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
             // Filter tabs
             Container(
-              margin: const EdgeInsets.all(16),
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     _FilterChip(
-                      label: 'All Goals',
+                      label: l10n.allGoals,
+                      icon: LucideIcons.layoutGrid,
                       isSelected: _selectedFilter == null,
                       onTap: () => setState(() => _selectedFilter = null),
                     ),
                     _FilterChip(
-                      label: 'Numeric',
+                      label: l10n.numeric,
+                      icon: LucideIcons.hash,
                       isSelected: _selectedFilter == GoalType.numeric,
                       onTap: () => setState(() => _selectedFilter = GoalType.numeric),
                     ),
                     _FilterChip(
-                      label: 'Habits',
+                      label: l10n.habits,
+                      icon: LucideIcons.flame,
                       isSelected: _selectedFilter == GoalType.habit,
                       onTap: () => setState(() => _selectedFilter = GoalType.habit),
                     ),
                     _FilterChip(
-                      label: 'Milestone',
+                      label: l10n.milestones,
+                      icon: LucideIcons.flag,
                       isSelected: _selectedFilter == GoalType.milestone,
                       onTap: () => setState(() => _selectedFilter = GoalType.milestone),
                     ),
                     _FilterChip(
-                      label: 'Levels',
+                      label: l10n.levels,
+                      icon: LucideIcons.layers,
                       isSelected: _selectedFilter == GoalType.levels,
                       onTap: () => setState(() => _selectedFilter = GoalType.levels),
                     ),
@@ -161,25 +230,74 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              LucideIcons.target,
-                              size: 64,
-                              color: isDark ? Colors.grey[500] : Colors.grey[400],
+                            Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF1ABC9C).withOpacity(0.15),
+                                    const Color(0xFF7C3BED).withOpacity(0.1),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: const Color(0xFF1ABC9C).withOpacity(0.3),
+                                ),
+                              ),
+                              child: Icon(
+                                LucideIcons.target,
+                                size: 48,
+                                color: isDark ? const Color(0xFF1ABC9C) : const Color(0xFF1ABC9C),
+                              ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 24),
                             Text(
-                              'No goals yet',
+                              l10n.noGoals,
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                                 color: isDark ? Colors.white : Colors.grey[800],
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Tap + to create your first goal',
+                              l10n.createFirstGoal,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
+                                ),
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF1ABC9C).withOpacity(0.4),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(LucideIcons.plus, color: Colors.white, size: 18),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    l10n.createGoal,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
@@ -208,41 +326,51 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const CreateGoalScreen()),
-          );
-        },
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: Container(
-          width: 56,
-          height: 56,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(15)),
-            gradient: LinearGradient(
-              colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF1ABC9C).withOpacity(0.5),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
-          ),
-          child: const Icon(
-            LucideIcons.plus,
-            color: Colors.white,
-            size: 32,
+            BoxShadow(
+              color: const Color(0xFF7C3BED).withOpacity(0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const CreateGoalScreen()),
+            );
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          child: Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF1ABC9C), Color(0xFF7C3BED)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: const Icon(
+              LucideIcons.plus,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ),
       ),
     );
-  }
-
-  String _getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
   }
 }
 
@@ -251,11 +379,13 @@ class _FilterChip extends StatelessWidget {
     required this.label,
     required this.isSelected,
     required this.onTap,
+    this.icon,
   });
 
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final IconData? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -263,29 +393,65 @@ class _FilterChip extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        margin: const EdgeInsets.only(right: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Color(0xFF1ABC9C), Color(0xFF26C6DA)],
+                )
+              : null,
           color: isSelected
-              ? const Color(0xFF1ABC9C)
-              : (isDark ? const Color(0xFF171A26) : Colors.white),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF222639).withOpacity(isDark ? 0.2 : 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
+              ? null
+              : (isDark ? const Color(0xFF1E2235) : Colors.white),
+          borderRadius: BorderRadius.circular(14),
+          border: isSelected
+              ? null
+              : Border.all(
+                  color: isDark 
+                      ? const Color(0xFF2A2D3A) 
+                      : Colors.grey.shade200,
+                ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF1ABC9C).withOpacity(0.4),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: const Color(0xFF222639).withOpacity(isDark ? 0.2 : 0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              Icon(
+                icon,
+                size: 16,
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.grey[400] : Colors.grey[600]),
+              ),
+              const SizedBox(width: 6),
+            ],
+            Text(
+              label,
+              style: TextStyle(
+                color: isSelected
+                    ? Colors.white
+                    : (isDark ? Colors.white70 : const Color(0xFF6C7993)),
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                fontSize: 13,
+              ),
             ),
           ],
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected
-                ? Colors.white
-                : (isDark ? Colors.white70 : const Color(0xFF6C7993)),
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-          ),
         ),
       ),
     );

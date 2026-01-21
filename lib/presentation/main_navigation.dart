@@ -23,49 +23,61 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF171A26) : Colors.white,
+          gradient: LinearGradient(
+            colors: isDark 
+                ? [const Color(0xFF1A1D2E), const Color(0xFF171A26)]
+                : [Colors.white, const Color(0xFFFAFBFC)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+          border: Border(
+            top: BorderSide(
+              color: isDark ? const Color(0xFF252839) : Colors.grey.shade200,
+              width: 1,
+            ),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.08),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
             ),
           ],
         ),
         child: Padding(
-          // solo padding top
-          padding: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 8),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _NavItem(
-                index: 0,
-                icon: LucideIcons.home,
-                label: 'Home',
-                isSelected: _currentIndex == 0,
-                onTap: () => setState(() => _currentIndex = 0),
-              ),
-              _NavItem(
-                index: 1,
-                icon: LucideIcons.barChart2,
-                label: 'Stats',
-                isSelected: _currentIndex == 1,
-                onTap: () => setState(() => _currentIndex = 1),
-              ),
-              _NavItem(
-                index: 2,
-                icon: LucideIcons.settings,
-                label: 'Settings',
-                isSelected: _currentIndex == 2,
-                onTap: () => setState(() => _currentIndex = 2),
-              ),
-            ],
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _NavItem(
+                  icon: LucideIcons.home,
+                  label: 'Home',
+                  isSelected: _currentIndex == 0,
+                  onTap: () => setState(() => _currentIndex = 0),
+                  isDark: isDark,
+                ),
+                _NavItem(
+                  icon: LucideIcons.barChart2,
+                  label: 'Stats',
+                  isSelected: _currentIndex == 1,
+                  onTap: () => setState(() => _currentIndex = 1),
+                  isDark: isDark,
+                ),
+                _NavItem(
+                  icon: LucideIcons.settings,
+                  label: 'Settings',
+                  isSelected: _currentIndex == 2,
+                  onTap: () => setState(() => _currentIndex = 2),
+                  isDark: isDark,
+                ),
+              ],
+            ),
           ),
-        ),
       ),
     );
   }
@@ -73,50 +85,59 @@ class _MainNavigationState extends State<MainNavigation> {
 
 class _NavItem extends StatelessWidget {
   const _NavItem({
-    required this.index,
     required this.icon,
     required this.label,
     required this.isSelected,
     required this.onTap,
+    required this.isDark,
   });
 
-  final int index;
   final IconData icon;
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
+    const accentColor = Color(0xFF1ABC9C);
+    final inactiveColor = isDark ? Colors.grey[500] : Colors.grey[400];
+    
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            color: isSelected ? const Color(0xFF1abc9c) : Colors.grey,
-            size: 24,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              color: isSelected ? const Color(0xFF1abc9c) : Colors.grey,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+      behavior: HitTestBehavior.opaque,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? accentColor : inactiveColor,
+              size: 24,
             ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            height: 3,
-            width: 24,
-            decoration: BoxDecoration(
-              color: isSelected ? const Color(0xFF1abc9c) : Colors.transparent,
-              borderRadius: BorderRadius.circular(1.5),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                color: isSelected ? accentColor : inactiveColor,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            // Small indicator dot/line
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: 3,
+              width: isSelected ? 20 : 0,
+              decoration: BoxDecoration(
+                color: accentColor,
+                borderRadius: BorderRadius.circular(1.5),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
