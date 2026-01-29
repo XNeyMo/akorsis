@@ -14,7 +14,21 @@ class StatsSummary extends StatelessWidget {
       builder: (context, state) {
         if (state is GoalsLoaded) {
           final totalGoals = state.goals.length;
-          final completedGoals = state.goals.where((g) => g.isCompleted).length;
+          final now = DateTime.now();
+          final today = DateTime(now.year, now.month, now.day);
+          
+          // Count completed goals including habits completed today
+          final completedGoals = state.goals.where((g) {
+            if (g.type == GoalType.habit) {
+              // For habits, count as completed if done today
+              return (g.completedDates ?? []).any((date) =>
+                date.year == today.year &&
+                date.month == today.month &&
+                date.day == today.day);
+            }
+            return g.isCompleted;
+          }).length;
+          
           final progress = totalGoals > 0 ? (completedGoals / totalGoals * 100).toInt() : 0;
           final activeStreaks = state.goals.where((g) => g.type == GoalType.habit && (g.streak ?? 0) > 0).length;
 
