@@ -81,16 +81,16 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
       final result = await _createGoal(event.goal);
 
       await result.fold(
-        (failure) {
+        (failure) async {
           emit(GoalError(failure.message));
         },
         (_) async {
           final goalsResult = await _getAllGoals();
-          goalsResult.fold(
-            (failure) {
+          await goalsResult.fold(
+            (failure) async {
               emit(GoalError(failure.message));
             },
-            (goals) {
+            (goals) async {
               emit(GoalsLoaded(goals));
             },
           );
@@ -108,13 +108,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _updateGoal(event.goal);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );
@@ -125,13 +125,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _deleteGoal(event.goalId);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );
@@ -142,13 +142,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _updateProgress(goalId: event.goalId, delta: event.delta, note: event.note);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );
@@ -159,13 +159,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _completeHabitForToday(event.goalId);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );
@@ -176,13 +176,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _completeMilestone(goalId: event.goalId, milestoneId: event.milestoneId);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );
@@ -193,13 +193,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _completeLevel(goalId: event.goalId, levelId: event.levelId);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );
@@ -221,13 +221,13 @@ class GoalBloc extends Bloc<GoalEvent, GoalState> {
 
     final result = await _importGoals(event.jsonData);
 
-    result.fold(
-      (failure) => emit(GoalError(failure.message)),
+    await result.fold(
+      (failure) async => emit(GoalError(failure.message)),
       (_) async {
         final goalsResult = await _getAllGoals();
-        goalsResult.fold(
-          (failure) => emit(GoalError(failure.message)),
-          (goals) => emit(GoalsLoaded(goals)),
+        await goalsResult.fold(
+          (failure) async => emit(GoalError(failure.message)),
+          (goals) async => emit(GoalsLoaded(goals)),
         );
       },
     );

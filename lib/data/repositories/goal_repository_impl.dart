@@ -78,9 +78,15 @@ class GoalRepositoryImpl implements GoalRepository {
       final goal = await _localDataSource.getGoalById(goalId);
       final current = goal.currentValue ?? 0;
       final newTotal = current + delta;
+      final target = goal.targetValue ?? 0;
+
+      // Check if goal should be marked as completed
+      final shouldComplete = !goal.isCompleted && target > 0 && newTotal >= target;
 
       final updatedGoal = GoalModel.fromEntity(goal).copyWith(
         currentValue: newTotal,
+        isCompleted: shouldComplete ? true : goal.isCompleted,
+        completedAt: shouldComplete ? DateTime.now() : goal.completedAt,
         updatedAt: DateTime.now(),
       );
 

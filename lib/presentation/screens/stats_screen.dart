@@ -324,6 +324,7 @@ class StatsScreen extends StatelessWidget {
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFF26C6DA),
                               goalsLabel: l10n.goals,
+                              completionPercentage: stats['numericProgress'] as double,
                             ),
                             const SizedBox(height: 12),
                             _GoalTypeCard(
@@ -333,6 +334,7 @@ class StatsScreen extends StatelessWidget {
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFFFF9800),
                               goalsLabel: l10n.goals,
+                              completionPercentage: stats['habitProgress'] as double,
                             ),
                             const SizedBox(height: 12),
                             _GoalTypeCard(
@@ -342,6 +344,7 @@ class StatsScreen extends StatelessWidget {
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFF7E57C2),
                               goalsLabel: l10n.goals,
+                              completionPercentage: stats['milestoneProgress'] as double,
                             ),
                             const SizedBox(height: 12),
                             _GoalTypeCard(
@@ -351,6 +354,7 @@ class StatsScreen extends StatelessWidget {
                               total: stats['totalGoals'] as int,
                               color: const Color(0xFF1ABC9C),
                               goalsLabel: l10n.goals,
+                              completionPercentage: stats['levelProgress'] as double,
                             ),
                           ],
                         ),
@@ -480,13 +484,73 @@ class StatsScreen extends StatelessWidget {
 
   Map<String, dynamic> _calculateStats(List<Goal> goals) {
     final totalGoals = goals.length;
-    final completedGoals = goals.where((g) => g.isCompleted).length;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    
+    // Count completed goals including habits completed today
+    final completedGoals = goals.where((g) {
+      if (g.type == GoalType.habit) {
+        // For habits, count as completed if done today
+        return (g.completedDates ?? []).any((date) =>
+          date.year == today.year &&
+          date.month == today.month &&
+          date.day == today.day);
+      }
+      return g.isCompleted;
+    }).length;
+    
     final overallProgress = totalGoals > 0 ? completedGoals / totalGoals : 0.0;
 
     final numericGoals = goals.where((g) => g.type == GoalType.numeric).length;
     final habitGoals = goals.where((g) => g.type == GoalType.habit).length;
     final milestoneGoals = goals.where((g) => g.type == GoalType.milestone).length;
     final levelGoals = goals.where((g) => g.type == GoalType.levels).length;
+
+    // Calculate average completion percentage for each type
+    double _calculateTypePercentage(GoalType type) {
+      final typeGoals = goals.where((g) => g.type == type).toList();
+      if (typeGoals.isEmpty) return 0.0;
+      
+      double totalPercentage = 0.0;
+      for (final goal in typeGoals) {
+        switch (goal.type) {
+          case GoalType.numeric:
+            final current = goal.currentValue ?? 0;
+            final target = goal.targetValue ?? 1;
+            if (target > 0) {
+              totalPercentage += ((current / target) * 100).clamp(0.0, 100.0);
+            }
+            break;
+          case GoalType.habit:
+            final completedToday = (goal.completedDates ?? []).any((date) =>
+                date.year == today.year &&
+                date.month == today.month &&
+                date.day == today.day);
+            totalPercentage += completedToday ? 100.0 : 0.0;
+            break;
+          case GoalType.milestone:
+            final milestones = goal.milestones ?? [];
+            if (milestones.isNotEmpty) {
+              final completed = milestones.where((m) => m.isCompleted).length;
+              totalPercentage += ((completed / milestones.length) * 100).clamp(0.0, 100.0);
+            }
+            break;
+          case GoalType.levels:
+            final levels = goal.levels ?? [];
+            if (levels.isNotEmpty) {
+              final currentIndex = goal.currentLevelIndex ?? 0;
+              totalPercentage += ((currentIndex / levels.length) * 100).clamp(0.0, 100.0);
+            }
+            break;
+        }
+      }
+      return totalPercentage / typeGoals.length;
+    }
+
+    final numericProgress = _calculateTypePercentage(GoalType.numeric);
+    final habitProgress = _calculateTypePercentage(GoalType.habit);
+    final milestoneProgress = _calculateTypePercentage(GoalType.milestone);
+    final levelProgress = _calculateTypePercentage(GoalType.levels);
 
     final activeStreaks = goals.where((g) => g.type == GoalType.habit && (g.streak ?? 0) > 0).length;
     final bestStreak = goals.fold<int>(0, (max, g) => g.bestStreak != null && g.bestStreak! > max ? g.bestStreak! : max);
@@ -504,6 +568,10 @@ class StatsScreen extends StatelessWidget {
       'habitGoals': habitGoals,
       'milestoneGoals': milestoneGoals,
       'levelGoals': levelGoals,
+      'numericProgress': numericProgress,
+      'habitProgress': habitProgress,
+      'milestoneProgress': milestoneProgress,
+      'levelProgress': levelProgress,
       'activeStreaks': activeStreaks,
       'bestStreak': bestStreak,
       'categoryCounts': categoryCounts,
@@ -687,6 +755,7 @@ class _GoalTypeCard extends StatelessWidget {
     required this.total,
     required this.color,
     required this.goalsLabel,
+    this.completionPercentage,
   });
 
   final IconData icon;
@@ -695,12 +764,13 @@ class _GoalTypeCard extends StatelessWidget {
   final int total;
   final Color color;
   final String goalsLabel;
+  final double? completionPercentage;
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final percentage = total > 0 ? (value / total * 100).toInt() : 0;
-    final progress = total > 0 ? value / total : 0.0;
+    final progress = completionPercentage ?? 0.0;
 
     return Container(
       padding: const EdgeInsets.all(14),
@@ -752,20 +822,35 @@ class _GoalTypeCard extends StatelessWidget {
                         color: isDark ? Colors.white : const Color(0xFF222639),
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: color.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        '$value $goalsLabel',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: color,
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '$value $goalsLabel',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: color,
+                            ),
+                          ),
                         ),
-                      ),
+                        if (value > 0) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            '• ${progress.toInt()}%',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: isDark ? Colors.grey[400] : Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),
@@ -780,7 +865,7 @@ class _GoalTypeCard extends StatelessWidget {
                       ),
                     ),
                     FractionallySizedBox(
-                      widthFactor: progress,
+                      widthFactor: (progress / 100).clamp(0.0, 1.0),
                       child: Container(
                         height: 6,
                         decoration: BoxDecoration(
